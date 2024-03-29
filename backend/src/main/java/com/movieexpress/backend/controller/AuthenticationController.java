@@ -5,8 +5,9 @@ import com.movieexpress.backend.component.SigninComponent;
 import com.movieexpress.backend.component.SignupComponent;
 import com.movieexpress.backend.customexception.ErrorCodes;
 import com.movieexpress.backend.models.*;
-import com.movieexpress.backend.systemutils.JwtUtils;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/auth")
-@CrossOrigin
+@CrossOrigin()
 public class AuthenticationController {
     @Autowired
     private SignupComponent signupComponent;
@@ -78,12 +79,14 @@ public class AuthenticationController {
         return null;
     }
     @PostMapping("/login")
-    public ResponseEntity<Response> signIn(@RequestBody SigninRequest sinSigninRequest){
+    public ResponseEntity<Response> signIn(@RequestBody SigninRequest sinSigninRequest, HttpServletResponse httpServletResponse){
         requestLog.registerRequest(sinSigninRequest.getIpAddress(), sinSigninRequest.getEmailId(), null);
         SigninResponse signinResponse = signinComponent.verifyUser(sinSigninRequest);
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("accessToken", signinResponse.getAccessToken());
-        httpHeaders.add("refreshToken", signinResponse.getRefreshToken());
+        String accessTokenCookie = "accessToken=" + signinResponse.getAccessToken() + "; Max-Age=86400; Path=/; HttpOnly=false; Secure=false";
+        String refreshTokenCookie = "refreshToken=" + signinResponse.getRefreshToken() + "; Max-Age=864000; Path=/; HttpOnly=false; Secure=false";
+        httpHeaders.add(HttpHeaders.SET_COOKIE, accessTokenCookie);
+        httpHeaders.add(HttpHeaders.SET_COOKIE, refreshTokenCookie);
         return new ResponseEntity<Response>(Response
                 .builder()
                 .status(true)
@@ -94,7 +97,7 @@ public class AuthenticationController {
                 httpHeaders,
                 HttpStatus.OK
         );
-    }
+}
 
 
 

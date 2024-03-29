@@ -1,8 +1,13 @@
 import { Routes } from '@angular/router';
-import { SigninComponent } from './components/auth/signin/signin.component';
-import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
+import { HomePageComponent } from './pages/home-page/home-page.component';
+import { LoginSignupComponent } from './pages/auth/login-signup/login-signup.component';
+import { LandingpageComponent } from './pages/landingpage/landingpage.component';
+import { RegistrationPageComponent } from './pages/auth/registration-page/registration-page.component';
 
 export const routes: Routes = [
-    {path:"login", component:SigninComponent},
-    {path:"**", component:PageNotFoundComponent}
+    {path:"", component: LandingpageComponent},
+    {path:"home", component:HomePageComponent},
+    {path:"signin", component: LoginSignupComponent},
+    {path:"signup", component: RegistrationPageComponent}
+
 ];

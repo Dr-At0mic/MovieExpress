@@ -33,6 +33,6 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
                 httpServletRequest.getMethod(),
                 LocalDateTime.now()
         );
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(response, exception.getHttpStatus());
     }
 }
