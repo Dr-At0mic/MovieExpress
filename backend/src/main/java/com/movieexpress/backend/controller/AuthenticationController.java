@@ -12,8 +12,11 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.Duration;
 
 @RestController
 @RequestMapping("api/auth")
@@ -79,24 +82,37 @@ public class AuthenticationController {
         return null;
     }
     @PostMapping("/login")
-    public ResponseEntity<Response> signIn(@RequestBody SigninRequest sinSigninRequest, HttpServletResponse httpServletResponse){
-        requestLog.registerRequest(sinSigninRequest.getIpAddress(), sinSigninRequest.getEmailId(), null);
+    public ResponseEntity<Response> signIn(@RequestBody SigninRequest sinSigninRequest, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest){
+        requestLog.registerRequest(httpServletRequest.getRequestId()+" "+httpServletRequest.getLocalAddr()+ " "+httpServletRequest.getRemoteAddr(), sinSigninRequest.getEmailId(), null);
         SigninResponse signinResponse = signinComponent.verifyUser(sinSigninRequest);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        String accessTokenCookie = "accessToken=" + signinResponse.getAccessToken() + "; Max-Age=86400; Path=/; HttpOnly=false; Secure=false";
-        String refreshTokenCookie = "refreshToken=" + signinResponse.getRefreshToken() + "; Max-Age=864000; Path=/; HttpOnly=false; Secure=false";
-        httpHeaders.add(HttpHeaders.SET_COOKIE, accessTokenCookie);
-        httpHeaders.add(HttpHeaders.SET_COOKIE, refreshTokenCookie);
-        return new ResponseEntity<Response>(Response
-                .builder()
-                .status(true)
-                .message("Login-Success-full")
-                .statusCode(ErrorCodes.SUCCESS)
-                .httpStatus(HttpStatus.OK)
-                .build(),
-                httpHeaders,
-                HttpStatus.OK
-        );
+        ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", signinResponse.getAccessToken())
+                .maxAge(Duration.ofDays(1)) // Max-Age set to 1 day
+                .path("/")
+                .httpOnly(false)
+                .secure(false)
+                .sameSite("None")
+                .build();
+
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", signinResponse.getRefreshToken())
+                .maxAge(Duration.ofDays(10)) // Max-Age set to 10 days
+                .path("/")
+                .httpOnly(false)
+                .secure(false)
+                .sameSite("None")
+                .build();
+
+        httpServletResponse.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
+        httpServletResponse.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
+                .body(Response.builder()
+                        .status(true)
+                        .message("Login-Success-full")
+                        .statusCode(ErrorCodes.SUCCESS)
+                        .httpStatus(HttpStatus.OK)
+                        .build());
 }
 
 

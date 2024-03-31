@@ -22,25 +22,25 @@ public class SigninComponent {
         if (signinRequest.getEmailId().isEmpty() || signinRequest.getPassword().isEmpty())
             throw new ApplicationException(
                     ErrorCodes.INVALID_INPUT,
-                    "Input-Fields-Are-Empty",
+                    "Input Fields Are Empty",
                     HttpStatus.BAD_REQUEST
             );
         if (signinRequest.getPassword().length() <= 8)
             throw new ApplicationException(
                     ErrorCodes.PASSWORD_TOO_SHORT,
-                    "Password-Must-Have-At-lest-8-Characters",
+                    "Password Must Have At lest 8 Characters",
                     HttpStatus.BAD_REQUEST
             );
         if (!crossCheck.emailValidation(signinRequest.getEmailId()))
             throw new ApplicationException(
                     ErrorCodes.INVALID_EMAIL_FORMAT,
-                    "Email-Address-Not-Valid",
-                    HttpStatus.FORBIDDEN
+                    "Email Address Not Valid",
+                    HttpStatus.NOT_ACCEPTABLE
             );
         if (!crossCheck.userExist(signinRequest.getEmailId()))
             throw new ApplicationException(
                     ErrorCodes.USER_ALREADY_EXISTS,
-                    "Not-User-Found",
+                    "No User Found",
                     HttpStatus.FORBIDDEN
             );
         return signinService.verifyUser(signinRequest);
