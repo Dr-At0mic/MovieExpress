@@ -37,7 +37,7 @@ public class SigninService {
                     "Invalid-Password",
                     HttpStatus.FORBIDDEN
             );
-        if(user.getAccountStatus()>0)
+        if(user.getAccountStatus()<1)
             throw new ApplicationException(
                 ErrorCodes.ACCOUNT_DISABLED,
                 "Account not activated",

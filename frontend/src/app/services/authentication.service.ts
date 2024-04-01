@@ -4,8 +4,6 @@ import { SystemConstants } from '../../utils/SystemConstants';
 import { ApiMethodsService } from '../apiservice/api-methods.service';
 import { ErrorCatcher } from '../models/ErrorCatcher.service';
 import { CaptchaResponse, Response } from '../models/Response.service';
-import { promisify } from 'util';
-import { createReadStream } from 'fs';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +18,7 @@ export class AuthenticationService {
     res.setHttpStatus(response.httpStatus);
     return res;
   }
-  constructor(private httpClient: HttpClient, private api: ApiMethodsService) {}
+  constructor(private api: ApiMethodsService) {}
   emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   illegalCharRegex = /[ \.\|\+\=\`~\?<>\[\]\{\}\"\':;^]/;
 
@@ -119,18 +117,8 @@ export class AuthenticationService {
       // return `data:${blob.type};base64,${base64String}`;
       const blobUrl = URL.createObjectURL(blob);
       return blobUrl;
-    } else {
-      const arrayBuffer = await blob.arrayBuffer();
-
-      // Convert ArrayBuffer to Buffer (Node.js)
-      const buffer = Buffer.from(arrayBuffer);
-    
-      // Convert Buffer to base64 string
-      const base64String = buffer.toString('base64');
-    
-      // Return data URL
-      return `data:${blob.type};base64,${base64String}`;
-    }
+    } 
+    return ""
   }
   async fetchAndRenderCaptchaOnServer() {
     try {

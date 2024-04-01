@@ -1,5 +1,10 @@
-import { NgStyle, isPlatformServer } from '@angular/common';
-import { AfterContentInit, Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { NgStyle } from '@angular/common';
+import {
+  AfterContentInit,
+  Component,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
 import { CaptchaResponse } from '../../models/Response.service';
 import { AuthenticationService } from '../../services/authentication.service';
 @Component({
@@ -7,44 +12,49 @@ import { AuthenticationService } from '../../services/authentication.service';
   standalone: true,
   imports: [NgStyle],
   templateUrl: './steps.component.html',
-  styleUrl: './steps.component.scss'
+  styleUrl: './steps.component.scss',
 })
-export class StepsComponent implements OnInit,OnDestroy,AfterContentInit{
-  intervalId: any ="";
+export class StepsComponent implements OnInit, AfterContentInit, OnDestroy {
+  intervalId: any = '';
+  captchaUrl: string = '';
+  captchaId: string = '';
   captchaText: string ="";
-  captchaId: string =""
-  capthaurl2: any;
-  captchaResponse : CaptchaResponse = new CaptchaResponse();
-  constructor(private authservice :AuthenticationService ,@Inject(PLATFORM_ID) private platformId: Object,){
-  }
+  password: string = "";
+  emailId: string = "";
+  captchaResponse: CaptchaResponse = new CaptchaResponse();
+  constructor(private authservice: AuthenticationService) {}
   async ngAfterContentInit(): Promise<void> {
-    this.intervalId = setInterval(async ()=>{
+    this.intervalId = setInterval(async () => {
+      URL.revokeObjectURL(this.captchaUrl);
       await this.FetchCaptcha();
-    },5000);
-      
+    }, 60000);
   }
 
   async ngOnInit(): Promise<void> {
-   
-    if (isPlatformServer(this.platformId)) {
-     const  captchaUrl: any =  await this.authservice.fetchAndRenderCaptchaOnServer();
-      console.log(captchaUrl)
-    }
-    else{
-    }
+    this.FetchCaptcha();
   }
-
-  handleCaptcha(capthca:string){
-    this.captchaText= capthca;
+  handleEmail(value: string){
+    this.emailId = value;
   }
-
-  async FetchCaptcha(){
-     const res = await this.authservice.getCaptcha();
-     this.captchaResponse = await  this.authservice.convertToCaptchaResponse(res);
-     this.capthaurl2 =  this.captchaResponse.getCaptchaUrl();
+  handlePassword(value: string) {
+    this.password = value;
   }
-
+  handleCaptcha(value: string) {
+    this.captchaText = value;
+  }
+  handleSubmit(){
+    console.log(this.password)
+    console.log(this.emailId)
+    console.log(this.captchaText)
+    console.log(this.captchaId)
+  }
+  async FetchCaptcha() {
+    const res = await this.authservice.getCaptcha();
+    this.captchaResponse = await this.authservice.convertToCaptchaResponse(res);
+    this.captchaUrl = this.captchaResponse.getCaptchaUrl();
+    this.captchaId = this.captchaResponse.getCaptchaId();
+  }
   ngOnDestroy(): void {
-    
+    clearInterval(this.intervalId);
   }
 }

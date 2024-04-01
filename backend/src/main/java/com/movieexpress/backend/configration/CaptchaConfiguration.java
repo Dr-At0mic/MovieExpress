@@ -16,8 +16,8 @@ public class CaptchaConfiguration {
         properties.setProperty("kaptcha.border", "no");
         properties.setProperty("kaptcha.border.color", "105,179,90");
         properties.setProperty("kaptcha.textproducer.font.color", "blue");
-        properties.setProperty("kaptcha.image.width", "200");
-        properties.setProperty("kaptcha.image.height", "50");
+        properties.setProperty("kaptcha.image.width", "300");
+        properties.setProperty("kaptcha.image.height", "100");
         properties.setProperty("kaptcha.textproducer.font.size", "40");
         properties.setProperty("kaptcha.textproducer.char.length", "5");
         properties.setProperty("kaptcha.textproducer.char.string", "abcde2345678gfynmnpwx");

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { NgIconComponent, provideIcons } from '@ng-icons/core'; 
 import { lucideLogIn } from '@ng-icons/lucide';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 @Component({
