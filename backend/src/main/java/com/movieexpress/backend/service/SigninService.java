@@ -37,6 +37,12 @@ public class SigninService {
                     "Invalid-Password",
                     HttpStatus.FORBIDDEN
             );
+        if(user.getAccountStatus()>0)
+            throw new ApplicationException(
+                ErrorCodes.ACCOUNT_DISABLED,
+                "Account not activated",
+                HttpStatus.FORBIDDEN
+            );
         String refreshToken = jwtUtils.tokenGenerator(user, SystemConstants.ACCESS_TOKEN_VALIDATION_TIME);
         userAuthentication.setRefreshToken(refreshToken);
         userAuthenticationRepository.save(userAuthentication);

@@ -1,6 +1,5 @@
 package com.movieexpress.backend.service;
 
-import com.mongodb.client.MongoClients;
 import com.movieexpress.backend.customexception.ApplicationException;
 import com.movieexpress.backend.customexception.ErrorCodes;
 import com.movieexpress.backend.sessiondocument.SessionDocument;
@@ -9,8 +8,6 @@ import jakarta.transaction.Transactional;
 import jakarta.transaction.TransactionalException;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -75,7 +72,7 @@ public class SessionHandler {
         return sessionDocument.getData();
     }
 
-    public String getDataFromSessionUsingObjectId(ObjectId sessionId) {
+    public String getTokenFromSessionUsingObjectId(ObjectId sessionId) {
         Optional<SessionDocument> sessionDocument = sessionRepository.findById(sessionId);
         if (sessionDocument.isEmpty())
             throw new ApplicationException(
@@ -95,5 +92,12 @@ public class SessionHandler {
                     HttpStatus.FORBIDDEN
             );
         }
+    }
+    public String setCatpcha(String captcha){
+       SessionDocument sessionDocument  = sessionRepository.save(SessionDocument.builder().accountVerificationToken(captcha).timeStamp(LocalDateTime.now()).build());
+       return sessionDocument.getMongosId().toHexString();
+    }
+    public void deleteSessionDocument(ObjectId objectId){
+        sessionRepository.deleteById(objectId);
     }
 }

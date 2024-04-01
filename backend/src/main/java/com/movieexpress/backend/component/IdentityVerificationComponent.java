@@ -2,12 +2,17 @@ package com.movieexpress.backend.component;
 
 import com.movieexpress.backend.customexception.ApplicationException;
 import com.movieexpress.backend.customexception.ErrorCodes;
+import com.movieexpress.backend.models.Response;
+import com.movieexpress.backend.service.CaptchaService;
 import com.movieexpress.backend.service.EmailService;
 import com.movieexpress.backend.systemutils.SystemConstants;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -15,6 +20,8 @@ import java.util.concurrent.Executors;
 public class IdentityVerificationComponent {
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private CaptchaService captchaService;
     private static final ExecutorService newThread = Executors.newFixedThreadPool(SystemConstants.MAXIMUM_POOL_SIZE);
 
     public void sendVerificationEmail(String emailId, String authenticationToken) {
@@ -116,5 +123,18 @@ public class IdentityVerificationComponent {
                     HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
+    }
+    public void captchaGenerate(HttpServletResponse response) throws IOException {
+        captchaService.generateCapthca(response);
+    }
+
+    public Response ValidateCaptcha(String captchaId, String captchaText) {
+        if(null == captchaId || null == captchaText || captchaId.length()<24)
+            throw new ApplicationException(
+                    ErrorCodes.INVALID_CAPTCHA,
+                    "captcha is invalid",
+                    HttpStatus.BAD_REQUEST
+            );
+        return captchaService.validateCaptcha(captchaId,captchaText);
     }
 }

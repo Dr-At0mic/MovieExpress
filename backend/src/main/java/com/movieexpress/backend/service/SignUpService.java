@@ -72,7 +72,7 @@ public class SignUpService {
 
     public Map<String, String> resendEmail(ObjectId sessionId) {
         Map<String, String> userData = new HashMap<>();
-        String verificationToken = sessionHandler.getDataFromSessionUsingObjectId(sessionId);
+        String verificationToken = sessionHandler.getTokenFromSessionUsingObjectId(sessionId);
         User user = (User)sessionHandler.getDataFromSession(verificationToken);
         userData.put("EmailId",user.getEmailId());
         userData.put("ValidationToken",verificationToken);

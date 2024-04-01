@@ -1,11 +1,11 @@
 package com.movieexpress.backend.controller;
 
+import com.movieexpress.backend.component.IdentityVerificationComponent;
 import com.movieexpress.backend.component.RequestLog;
 import com.movieexpress.backend.component.SigninComponent;
 import com.movieexpress.backend.component.SignupComponent;
 import com.movieexpress.backend.customexception.ErrorCodes;
 import com.movieexpress.backend.models.*;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.bson.types.ObjectId;
@@ -16,6 +16,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.time.Duration;
 
 @RestController
@@ -28,6 +29,8 @@ public class AuthenticationController {
     private SigninComponent signinComponent;
     @Autowired
     private RequestLog requestLog;
+    @Autowired
+    private IdentityVerificationComponent identityVerificationComponent;
     @PostMapping("/signUp")
     public ResponseEntity<Response> singUp(@RequestBody SignupRequest signUpRequest) {
         requestLog.registerRequest(signUpRequest.getIpAddress(),signUpRequest.getEmailId(),null);
@@ -114,7 +117,21 @@ public class AuthenticationController {
                         .httpStatus(HttpStatus.OK)
                         .build());
 }
-
-
-
+    @GetMapping("/captcha")
+    public void generateCaptcha(HttpServletResponse httpServletResponse) throws IOException {
+            identityVerificationComponent.captchaGenerate(httpServletResponse);
+    }
+    @PostMapping("/Validate-captcha")
+    public ResponseEntity<Response> validateCaptha(@RequestBody CaptchaRequest captchaRequest){
+        Response res = identityVerificationComponent.ValidateCaptcha(captchaRequest.getCaptchaId(),captchaRequest.getCaptchaText());
+        return new ResponseEntity<Response>(Response
+                .builder()
+                .status(res.isStatus())
+                .message(res.getMessage())
+                .statusCode(ErrorCodes.SUCCESS)
+                .httpStatus(HttpStatus.OK)
+                .build(),
+                HttpStatus.OK
+        );
+    }
 }

@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
+import { NavigationBarComponent } from '../../components/shared/navigation-bar/navigation-bar.component';
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [],
+  imports: [NavigationBarComponent],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.scss'
 })

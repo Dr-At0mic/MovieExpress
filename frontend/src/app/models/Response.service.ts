@@ -36,3 +36,19 @@ export class Response {
     this.httpStatus= value
   }
 }
+export class CaptchaResponse{
+  private captchaId: string ="";
+  private captchaUrl: any ;
+  public getCaptchaId(): string{
+    return this.captchaId;
+  }
+  public setCaptchaId(value:string){
+    this.captchaId= value;
+  }
+  public getCaptchaUrl(): any{
+    return this.captchaUrl;
+  }
+  public setCaptchaUrl(value:any){
+    this.captchaUrl= value
+  }
+}

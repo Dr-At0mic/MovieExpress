@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { SystemConstants } from '../../utils/SystemConstants';
@@ -15,6 +15,13 @@ export class ApiMethodsService {
     }catch(apierror){
       return of (apierror);
     }
-    
+  }
+  getCaptcha(url: string): Observable<any>{
+    try {
+      const headers = new HttpHeaders().set('Content-Type', 'application/json');
+      return this.http.get(url,{headers,responseType: 'blob', observe: 'response' },);
+    } catch (apierror) {
+      return of(apierror);
+    }
   }
 }
