@@ -9,9 +9,9 @@ import { SystemConstants } from '../../utils/SystemConstants';
 export class ApiMethodsService {
 
   constructor(private http: HttpClient) { }
-  postMethod(data: any): Observable<any>{
+  postMethod(url: string,data: any): Observable<any>{
     try{
-      return this.http.post(SystemConstants.LOGIN_URL, data, { withCredentials: true });
+      return this.http.post(url,data,{ withCredentials: true });
     }catch(apierror){
       return of (apierror);
     }

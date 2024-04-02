@@ -15,6 +15,7 @@ import { AuthenticationService } from '../../services/authentication.service';
   styleUrl: './steps.component.scss',
 })
 export class StepsComponent implements OnInit, AfterContentInit, OnDestroy {
+  Message: string = "";
   intervalId: any = '';
   captchaUrl: string = '';
   captchaId: string = '';
@@ -42,11 +43,10 @@ export class StepsComponent implements OnInit, AfterContentInit, OnDestroy {
   handleCaptcha(value: string) {
     this.captchaText = value;
   }
-  handleSubmit(){
-    console.log(this.password)
-    console.log(this.emailId)
-    console.log(this.captchaText)
-    console.log(this.captchaId)
+  async handleSubmit(){
+    const response = await this.authservice.createNewUser(this.captchaId,this.captchaText,this.emailId,this.password)
+    this.Message = response.getMessage();
+    console.log(response);
   }
   async FetchCaptcha() {
     const res = await this.authservice.getCaptcha();

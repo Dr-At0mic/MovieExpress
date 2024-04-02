@@ -4,11 +4,13 @@ import { SystemConstants } from '../../utils/SystemConstants';
 import { ApiMethodsService } from '../apiservice/api-methods.service';
 import { ErrorCatcher } from '../models/ErrorCatcher.service';
 import { CaptchaResponse, Response } from '../models/Response.service';
+import { __values } from 'tslib';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthenticationService {
+
   convertToResponse(response: any): Response {
     const res: Response = new Response();
     res.setData(response.data);
@@ -30,7 +32,7 @@ export class AuthenticationService {
   }
 
   validateCredentials(emailId: string, password: string): ErrorCatcher {
-    const errorCatcher = new ErrorCatcher(false, 0, '', 0, '', null);
+    const errorCatcher = new ErrorCatcher();
     if (!emailId || !password) {
       errorCatcher.setMessage('All fields are Mandatory');
       return errorCatcher;
@@ -49,14 +51,8 @@ export class AuthenticationService {
     return errorCatcher;
   }
   convertToErrorCatcher(error: any): ErrorCatcher {
-    const errorCatcher: ErrorCatcher = new ErrorCatcher(
-      false,
-      0,
-      '',
-      0,
-      '',
-      null
-    );
+    const errorCatcher: ErrorCatcher = new ErrorCatcher();
+    errorCatcher.setStatus(error.status)
     errorCatcher.setMessage(error.message);
     errorCatcher.setErrorCode(error.errorCode);
     errorCatcher.setStatusCode(error.statusCode);
@@ -70,13 +66,13 @@ export class AuthenticationService {
     );
     if (!validate.isStatus()) return validate;
     return new Promise<ErrorCatcher>((resolve, reject) => {
-      this.api.postMethod(data).subscribe({
+      this.api.postMethod(SystemConstants.LOGIN_URL,data).subscribe({
         next: (value) => {
-          const errorCatcher = new ErrorCatcher(false, 0, '', 0, '', value);
+          const errorCatcher = new ErrorCatcher();
+          errorCatcher.setData(value)
           resolve(errorCatcher);
         },
         error: (err) => {
-          const errorCatcher = new ErrorCatcher(false, 0, '', 0, '', err);
           reject(err.error);
         },
         complete: () => {
@@ -129,5 +125,69 @@ export class AuthenticationService {
       console.error('Error fetching captcha during SSR:', error);
       return ""
     }
+  }
+  async createNewUser(captchaId: string, captchaText: string, emailId: string, password: string): Promise<ErrorCatcher> {
+    const errorcather: ErrorCatcher=this.validateCredentials(emailId,password);
+    if(!errorcather.isStatus())
+        return errorcather;
+    if(!captchaText){
+      errorcather.setMessage("Captcha is required");
+      return errorcather;
+    }
+    const captData ={
+      "captchaId":captchaId,
+      "captchaText": captchaText,
+    }
+    const userDto = {
+      "emailId": emailId,
+      "password":password,
+      "ipAddress":"234234"
+    }
+    try {
+      const serverresponse = await this.validateCaptcha(captData);
+      const  response =this.convertToErrorCatcher(serverresponse.getData());
+      const createNewuserResponse = await this.sendNewuser(userDto);
+    } catch (error : any) {
+      const  response =this.convertToErrorCatcher(error.getData());
+      return response;
+    }
+    return new ErrorCatcher();
+  }
+  async sendNewuser(data: any) :Promise<any>{
+    return new Promise<ErrorCatcher>((resolve,reject)=>{
+      const errorCatcher : ErrorCatcher = new ErrorCatcher();
+      this.api.postMethod(SystemConstants.CREATE_NEW_USER_URL,data).subscribe({
+        next(value) {
+
+          errorCatcher.setData(value);
+          resolve(errorCatcher);
+        },
+        error(err) {
+          errorCatcher.setData(err.error);
+          reject(errorCatcher)
+        },
+        complete() {
+          console.log("Verification Send to your account")
+        },
+      });
+    })
+  }
+  async validateCaptcha(data: any) :Promise<any>{
+    return new Promise<ErrorCatcher>((resolve,reject)=>{
+      const errorCatcher : ErrorCatcher = new ErrorCatcher();
+      this.api.postMethod(SystemConstants.VERIFY_CAPTCHA_URL,data).subscribe({
+        next(value) {
+          errorCatcher.setData(value);
+          resolve(errorCatcher);
+        },
+        error(err) {
+          errorCatcher.setData(err.error);
+          reject(errorCatcher)
+        },
+        complete() {
+          console.log("verifycaptcha completed")
+        },
+      });
+    })
   }
 }

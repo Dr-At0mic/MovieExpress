@@ -6,6 +6,7 @@ import com.movieexpress.backend.models.*;
 import com.movieexpress.backend.service.CrossCheck;
 import com.movieexpress.backend.service.SessionHandler;
 import com.movieexpress.backend.service.SignUpService;
+import com.sun.tools.jconsole.JConsoleContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -28,8 +29,8 @@ public class SignupComponent {
     private IdentityVerificationComponent identityVerificationComponent;
 
     public SendEmailResponse verifyEmail(SignupRequest signUpRequest) {
-
-        if (signUpRequest.getEmailId().isEmpty() || signUpRequest.getPassword().isEmpty())
+        System.out.println(signUpRequest);
+        if (null == signUpRequest.getEmailId() || null == signUpRequest.getPassword() || signUpRequest.getEmailId().isEmpty() || signUpRequest.getPassword().isEmpty())
             throw new ApplicationException(
                     ErrorCodes.INVALID_INPUT,
                     "Input-Fields-Are-Empty",

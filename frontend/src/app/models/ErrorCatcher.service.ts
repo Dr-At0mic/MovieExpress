@@ -6,20 +6,13 @@ export class ErrorCatcher {
   private statusName: string = '';
   private data: any;
   constructor(
-    status: boolean,
-    errorCode: number,
-    message: string,
-    statusCode: number,
-    statusName: string,
-    data: any
-  ) {
-    this.status = status;
-    this.errorCode = errorCode;
-    this.mesage = message;
-    this.statusCode = statusCode;
-    this.statusName = statusName;
-    this.data = data;
-  }
+    // status: boolean,
+    // errorCode: number,
+    // message: string,
+    // statusCode: number,
+    // statusName: string,
+    // data: any
+  ) {}
   public isStatus() {
     return this.status;
   }
