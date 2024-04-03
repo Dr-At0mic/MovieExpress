@@ -14,6 +14,6 @@ export class NewletterformComponent{
   backgroundImage: string = `../../assets/newletterbakcground.jpg`;
   isvlaid: boolean=true;
   getStartedTrigger(){
-    this.router.navigate(["signup"])
+    this.router.navigate(["/c2lnbnVw"])
   }
 }

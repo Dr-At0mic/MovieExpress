@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { SystemConstants } from '../../utils/SystemConstants';
 import { ApiMethodsService } from '../apiservice/api-methods.service';
@@ -10,7 +10,6 @@ import { __values } from 'tslib';
   providedIn: 'root',
 })
 export class AuthenticationService {
-
   convertToResponse(response: any): Response {
     const res: Response = new Response();
     res.setData(response.data);
@@ -52,7 +51,7 @@ export class AuthenticationService {
   }
   convertToErrorCatcher(error: any): ErrorCatcher {
     const errorCatcher: ErrorCatcher = new ErrorCatcher();
-    errorCatcher.setStatus(error.status)
+    errorCatcher.setStatus(error.status);
     errorCatcher.setMessage(error.message);
     errorCatcher.setErrorCode(error.errorCode);
     errorCatcher.setStatusCode(error.statusCode);
@@ -66,10 +65,10 @@ export class AuthenticationService {
     );
     if (!validate.isStatus()) return validate;
     return new Promise<ErrorCatcher>((resolve, reject) => {
-      this.api.postMethod(SystemConstants.LOGIN_URL,data).subscribe({
+      this.api.postMethod(SystemConstants.LOGIN_URL, data).subscribe({
         next: (value) => {
           const errorCatcher = new ErrorCatcher();
-          errorCatcher.setData(value)
+          errorCatcher.setData(value);
           resolve(errorCatcher);
         },
         error: (err) => {
@@ -101,8 +100,8 @@ export class AuthenticationService {
     const header: HttpHeaders = res.headers;
     const blobBody: Blob = res.body;
     // response.setCaptchaUrl(URL.createObjectURL(blobBody));
-    response.setCaptchaUrl( await this.blobToDataURL(blobBody))
-    response.setCaptchaId(header.get("captchaId")||"");
+    response.setCaptchaUrl(await this.blobToDataURL(blobBody));
+    response.setCaptchaId(header.get('captchaId') || '');
     return response;
   }
 
@@ -113,8 +112,8 @@ export class AuthenticationService {
       // return `data:${blob.type};base64,${base64String}`;
       const blobUrl = URL.createObjectURL(blob);
       return blobUrl;
-    } 
-    return ""
+    }
+    return '';
   }
   async fetchAndRenderCaptchaOnServer() {
     try {
@@ -123,71 +122,119 @@ export class AuthenticationService {
       return await this.blobToDataURL(blob);
     } catch (error) {
       console.error('Error fetching captcha during SSR:', error);
-      return ""
+      return '';
     }
   }
-  async createNewUser(captchaId: string, captchaText: string, emailId: string, password: string): Promise<ErrorCatcher> {
-    const errorcather: ErrorCatcher=this.validateCredentials(emailId,password);
-    if(!errorcather.isStatus())
-        return errorcather;
-    if(!captchaText){
-      errorcather.setMessage("Captcha is required");
+  async createNewUser(
+    captchaId: string,
+    captchaText: string,
+    emailId: string,
+    password: string
+  ): Promise<ErrorCatcher> {
+    const errorcather: ErrorCatcher = this.validateCredentials(
+      emailId,
+      password
+    );
+    if (!errorcather.isStatus()) return errorcather;
+    if (!captchaText) {
+      errorcather.setMessage('Captcha is required');
       return errorcather;
     }
-    const captData ={
-      "captchaId":captchaId,
-      "captchaText": captchaText,
-    }
+    const captData = {
+      captchaId: captchaId,
+      captchaText: captchaText,
+    };
     const userDto = {
-      "emailId": emailId,
-      "password":password,
-      "ipAddress":"234234"
-    }
+      emailId: emailId,
+      password: password,
+      ipAddress: '234234',
+    };
     try {
       const serverresponse = await this.validateCaptcha(captData);
       const  response =this.convertToErrorCatcher(serverresponse.getData());
       const createNewuserResponse = await this.sendNewuser(userDto);
-    } catch (error : any) {
-      const  response =this.convertToErrorCatcher(error.getData());
+      const newuserResponse = this.convertToErrorCatcher(
+        createNewuserResponse.getData()
+      );
+      return newuserResponse;
+    } catch (error: any) {
+      const response = this.convertToErrorCatcher(error.getData());
       return response;
     }
-    return new ErrorCatcher();
   }
-  async sendNewuser(data: any) :Promise<any>{
-    return new Promise<ErrorCatcher>((resolve,reject)=>{
-      const errorCatcher : ErrorCatcher = new ErrorCatcher();
-      this.api.postMethod(SystemConstants.CREATE_NEW_USER_URL,data).subscribe({
-        next(value) {
-
-          errorCatcher.setData(value);
-          resolve(errorCatcher);
-        },
-        error(err) {
-          errorCatcher.setData(err.error);
-          reject(errorCatcher)
-        },
-        complete() {
-          console.log("Verification Send to your account")
-        },
-      });
-    })
-  }
-  async validateCaptcha(data: any) :Promise<any>{
-    return new Promise<ErrorCatcher>((resolve,reject)=>{
-      const errorCatcher : ErrorCatcher = new ErrorCatcher();
-      this.api.postMethod(SystemConstants.VERIFY_CAPTCHA_URL,data).subscribe({
+  async sendNewuser(data: any): Promise<any> {
+    return new Promise<ErrorCatcher>((resolve, reject) => {
+      const errorCatcher: ErrorCatcher = new ErrorCatcher();
+      this.api.postMethod(SystemConstants.CREATE_NEW_USER_URL, data).subscribe({
         next(value) {
           errorCatcher.setData(value);
           resolve(errorCatcher);
         },
         error(err) {
           errorCatcher.setData(err.error);
-          reject(errorCatcher)
+          reject(errorCatcher);
         },
         complete() {
-          console.log("verifycaptcha completed")
+          console.log('Verification Send to your account');
         },
       });
-    })
+    });
+  }
+  async validateCaptcha(data: any): Promise<any> {
+    return new Promise<ErrorCatcher>((resolve, reject) => {
+      const errorCatcher: ErrorCatcher = new ErrorCatcher();
+      this.api.postMethod(SystemConstants.VERIFY_CAPTCHA_URL, data).subscribe({
+        next(value) {
+          errorCatcher.setData(value);
+          resolve(errorCatcher);
+        },
+        error(err) {
+          errorCatcher.setData(err.error);
+          reject(errorCatcher);
+        },
+        complete() {
+          console.log('verifycaptcha completed');
+        },
+      });
+    });
+  }
+  async verifyEmail(verificationToken: string) {
+    const errorcatcher: ErrorCatcher = new ErrorCatcher();
+    if(!verificationToken){
+      errorcatcher.setMessage("invalid Token");
+    }
+    try {
+      const serverresponse = await this.validateEmail(verificationToken);
+      const response = this.convertToErrorCatcher(
+        serverresponse.getData()
+      );
+      return response;
+    } catch (error: any) {
+      const response = this.convertToErrorCatcher(error.getData());
+      return response;
+    }
+  }
+  async validateEmail(verificationToken: string): Promise<ErrorCatcher> {
+    const data = {
+      "sessionAccessToken":verificationToken
+    }
+    return new Promise<ErrorCatcher>((resolve, reject) => {
+      const errorCatcher: ErrorCatcher = new ErrorCatcher();
+      this.api
+        .postMethod(SystemConstants.VALIDATE_EMAIL_URL,data)
+        .subscribe({
+          next(value) {
+            errorCatcher.setData(value);
+            resolve(errorCatcher);
+          },
+          error(err) {
+            errorCatcher.setData(err.error);
+            reject(errorCatcher);
+          },
+          complete() {
+            console.log('Verification Send to your account');
+          },
+        });
+    });
   }
 }

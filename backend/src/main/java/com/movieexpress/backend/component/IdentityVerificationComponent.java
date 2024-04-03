@@ -100,7 +100,7 @@ public class IdentityVerificationComponent {
                 "            <p>Best regards,<br>[Your Organization]</p>\n" +
                 "        </div>\n" +
                 "        <div class=\"footer\">\n" +
-                "            <p>This email was sent to you by Example Company. If you wish to unsubscribe, <a href=\"#\">click here</a>.</p>\n" +
+                "            <p>Not Registered by you?, <a href=\"#\">click here</a> to delete your account</p>\n" +
                 "        </div>\n" +
                 "    </div>\n" +
                 "</body>\n" +
@@ -111,7 +111,7 @@ public class IdentityVerificationComponent {
                         emailId,
                         "verification email for your signup in movieexpress",
                         htmlBody.replace("[VerificationLink]",
-                                "http://localhost:8080/api/auth/verifyaccount?token="+authenticationToken
+                                "http://localhost:4200/ZW1haWxWZXJpZmljYXRpb24/dmVyaWZpY2F0aW9uVG9rZW4="+authenticationToken
                         )
                 );
             });

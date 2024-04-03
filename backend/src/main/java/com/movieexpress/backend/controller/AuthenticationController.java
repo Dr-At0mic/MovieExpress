@@ -47,22 +47,34 @@ public class AuthenticationController {
         );
     }
 
-    @GetMapping("/verifyaccount")
-    //change the @RequestParam to @RequestHeader
-    public ResponseEntity<Response> verifyAccount(@RequestParam String token, HttpServletRequest httpServletRequest){
-        requestLog.registerRequest(httpServletRequest.getHeader("ipAddress"),null,token);
-        // change request param to request body later
-        EmailVerificationResponse emailVerificationResponse = signupComponent.authenticateVerificationToken(VerifyEmailRequest.builder().sessionAccessToken(token).build());
-        return new ResponseEntity<Response>(Response
-                .builder()
-                .data(emailVerificationResponse)
-                .status(true)
-                .message("Account-Activated")
-                .statusCode(ErrorCodes.SUCCESS)
-                .httpStatus(HttpStatus.OK)
-                .build(),
-                HttpStatus.OK
-        );
+   @PostMapping("/activateAccount")
+    public ResponseEntity<Response> verifyAccount(@RequestBody VerifyEmailRequest verifyEmailRequest, HttpServletRequest httpServletRequest){
+        requestLog.registerRequest(httpServletRequest.getHeader("ipAddress"),null,verifyEmailRequest.getSessionAccessToken());
+        EmailVerificationResponse emailVerificationResponse = signupComponent.authenticateVerificationToken(verifyEmailRequest);
+       ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", emailVerificationResponse.getAccessToken())
+               .maxAge(Duration.ofDays(1)) // Max-Age set to 1 day
+               .path("/")
+               .httpOnly(false)
+               .secure(false)
+               .sameSite("None")
+               .build();
+
+       ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", emailVerificationResponse.getRefreshToken())
+               .maxAge(Duration.ofDays(10)) // Max-Age set to 10 days
+               .path("/")
+               .httpOnly(false)
+               .secure(false)
+               .sameSite("None")
+               .build();
+       return ResponseEntity.ok()
+               .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
+               .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
+               .body(Response.builder()
+                       .status(true)
+                       .message("Account Activated.")
+                       .statusCode(ErrorCodes.SUCCESS)
+                       .httpStatus(HttpStatus.OK)
+                       .build());
     }
     @GetMapping("/resendemail")
     public ResponseEntity<Response> resendEmail(@RequestParam String objectId, HttpServletRequest httpServletRequest){

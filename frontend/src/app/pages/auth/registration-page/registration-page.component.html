@@ -8,7 +8,8 @@
 <div class="main-panle bg-black">
     <app-landing-na-vbar></app-landing-na-vbar>
     <div class="h-[72.8dvh] w-[100%]">
-        <app-steps></app-steps>
+        <app-verificationsend [data]="verificationMessage"></app-verificationsend>
+        <app-steps (verificationMessageEvent) = "captureVerificationMessage($event)"></app-steps>
     </div>
 </div>
 <app-landingfooter></app-landingfooter>

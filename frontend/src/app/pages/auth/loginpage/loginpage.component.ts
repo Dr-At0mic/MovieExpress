@@ -16,7 +16,7 @@ import { CookieService ,CookieOptionsProvider, COOKIE_OPTIONS,COOKIE_WRITER, Coo
 })
   export class LoginpageComponent {
     constructor(private authService: AuthenticationService,private router: Router,private cookie: CookieService) { 
-      if(this.cookie.hasKey("accessToken")){
+      if(this.cookie.hasKey("refreshToken")){
         this.router.navigate(["/home"],{replaceUrl: true})
       }
     }
