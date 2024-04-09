@@ -1,35 +1,36 @@
-<nav x-data="{ isOpen: false }"  class="container-lg p-6 mx-auto lg:flex lg:justify-between lg:items-center bg-black">
-    <div class="flex items-center justify-between">
-        <a href="#">
-            <img class="w-auto h-6 sm:h-7" src="https://merakiui.com/images/full-logo.svg" alt="">
-        </a>
-
-        <!-- Mobile menu button -->
-        <div class="flex lg:hidden">
-            <button x-cloak (click)="toggleMenu()" [ngClass]="{ 'active': isOpen }" type="button" class="text-gray-500 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 focus:outline-none focus:text-gray-600 dark:focus:text-gray-400" aria-label="toggle menu">
-                <svg x-show="!isOpen" *ngIf="!isOpen" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M4 16h16" />
-                </svg>
-            
-                <svg x-show="isOpen" *ngIf="isOpen" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
+<div class="bg-[#0a0a0a] fixed h-[6dvh] w-[100%] md:h-[100dvh] md:w-[6vmax] xl:w-[5vmax] flex justify-center items-center md:left-0 top-0">
+    <div class=" md:flex-col flex md:w-[90%] md:h-[98.5%] h-[90%] w-[98.5%] justify-between">
+        <div class="md:h-[10%] md:w-[100%] sm:w-[20%] h-[100%] flex justify-center items-center md:pb-4 sm:ml-0 ml-2">
+            <span class="text-red-600 sm:text-[.8rem] font-extrabold text-[1.4vmax] md:text-[.6rem] lg:text-[.7rem]">MovieExpress</span>
         </div>
-    </div>                  
-
-    <!-- Mobile Menu open: "block", Menu closed: "hidden" -->
-    <div x-cloak class="absolute {{style}} inset-x-0 z-20 w-full px-6 py-4 transition-all duration-300 ease-in-out bg-white shadow-md lg:shadow-none dark:bg-gray-900 lg:mt-0 lg:p-0 lg:top-0 lg:bg-transparent lg:dark:bg-transparent lg:relative lg:w-auto lg:opacity-100 lg:translate-x-0 lg:flex lg:items-center">
-        <div class="flex flex-col space-y-4 lg:mt-0 lg:flex-row lg:space-y-0">
-            <a class="text-gray-700 lg:mx-6 dark:text-gray-200 dark:hover:text-red-400 hover:text-red-500" href="#">Home</a>
-            <a class="text-gray-700 lg:mx-6 dark:text-gray-200 dark:hover:text-red-400 hover:text-red-500" href="#">Components</a>
-            <a class="text-gray-700 lg:mx-6 dark:text-gray-200 dark:hover:text-red-400 hover:text-red-500" href="#">Pricing</a>
-            <a class="text-gray-700 lg:mx-6 dark:text-gray-200 dark:hover:text-red-400 hover:text-red-500" href="#">Contact</a>
-            <a class="text-gray-700 lg:mx-6 dark:text-gray-200 dark:hover:text-red-400 hover:text-red-500" href="#">FAQ</a>
+        <div class="md:h-[80%] md:w-[100%] w-[80%] h-[100%] sm:flex justify-center items-center hidden">
+                <div class="sm:w-[90%] sm:h-[75%] sm:flex md:flex-col sm:justify-between sm:items-center">
+                    @for (item of menuItemsList; track $index) {
+                        <div class="md:w-full md:h-[10%] w-[10%] h-full sm:flex justify-center items-center hidden lg:text-[2vmax] md:text-[2.4vmax]">
+                            <button (click)="redirectMenu(item.iconId)"><ng-icon [name]="item.iconName" color="white"></ng-icon></button>
+                        </div>
+                    }
+                </div>
         </div>
-
-        <a class="block px-5 py-2 mt-4 text-sm text-center text-gray-700 capitalize transition-colors duration-300 transform border rounded-md dark:hover:bg-gray-700 dark:text-white lg:mt-0 hover:bg-gray-100 lg:w-auto" href="#">
-            Contact Us
-        </a>
+        <div class="md:h-[10%] md:w-[100%]  w-[10%] h-[100%] flex justify-center items-center ">
+           <button (click)="menuTrigger()" class="sm:hidden flex text-[1.6rem]"> <ng-icon name="heroBars3Solid" color="white"></ng-icon></button>
+           <button (click)="redirectMenu(8)" class="sm:flex hidden bg-white lg:h-[3vmax] lg:w-[3vmax] md:h-[4vmax] md:w-[4vmax] sm:h-[4dvh] sm:w-[4dvh] rounded-full"></button>
+        </div>
     </div>
-</nav>
+</div>
+@if(menuFlag){
+    <div class="bg-black w-[40%] h-[55dvh] absolute right-0 top-0 sm:hidden flex justify-center mt-[6dvh] z-10">
+        <div class="h-[98%] w-[90%] flex flex-col justify-between items-center mt-1">
+            @for (item of menuItemsList; track $index) {
+                <button (click)="redirectMenu(item.iconId)" class="bg-[#801717] rounded-lg sm:w-[100%] sm:h-[10%] flex justify-start items-center text-[20px] w-[90%] h-[10%] select-none active:bg-red-500">
+                    <ng-icon class="ml-2" [name]="item.iconName" color="white"></ng-icon>
+                    <span class="ml-2 text-sm flex sm:hidden">{{item.description}}</span>
+                </button>
+            }
+            <div (click)="redirectMenu(8)" class="bg-slate-800 active:bg-slate-600 w-[100%] h-[10%] flex justify-start items-center text-white select-none">
+                <div class="ml-2 w-[3dvh] h-[3dvh] rounded-full flex justify-center items-center bg-white"></div>
+                <span class="ml-2">Profile</span>
+            </div>
+        </div>
+    </div>
+}

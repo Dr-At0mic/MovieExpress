@@ -17,7 +17,7 @@ import { CookieService ,CookieOptionsProvider, COOKIE_OPTIONS,COOKIE_WRITER, Coo
   export class LoginpageComponent {
     constructor(private authService: AuthenticationService,private router: Router,private cookie: CookieService) { 
       if(this.cookie.hasKey("refreshToken")){
-        this.router.navigate(["/home"],{replaceUrl: true})
+        this.router.navigate(["/dashboard"],{replaceUrl: true})
       }
     }
     errorMessage: any;
@@ -43,7 +43,7 @@ import { CookieService ,CookieOptionsProvider, COOKIE_OPTIONS,COOKIE_WRITER, Coo
             const res: Response = this.authService.convertToResponse(response.getData());
             this.errorMessage=res.getMessage();
             if(res.isStatus()){
-              this.router.navigate(["/home"],{replaceUrl: true});
+              this.router.navigate(["/dashboard"],{replaceUrl: true});
             }
           }
         } catch (error) {

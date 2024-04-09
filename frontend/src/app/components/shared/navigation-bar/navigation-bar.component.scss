@@ -1,0 +1,21 @@
+
+.sheetup {
+    position: fixed;
+    height: 100dvh;
+    width: 100%;
+    animation: slideUp 0.6s ease-in-out;
+  }
+.sheetDown{
+    position: fixed;
+    height: 100dvh;
+    width: 100%;
+    animation: slideDown 0.6s ease-in-out;
+}
+@keyframes slideUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1;}
+  }
+@keyframes slideDown {
+    from {transform: translateY(0%);opacity: 1;}
+    to{transform: translateY(100%);opacity: 0;}
+}

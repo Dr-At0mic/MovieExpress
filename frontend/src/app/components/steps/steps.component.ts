@@ -31,7 +31,7 @@ export class StepsComponent implements OnInit, AfterContentInit, OnDestroy {
   captchaResponse: CaptchaResponse = new CaptchaResponse();
   constructor(private authservice: AuthenticationService,private cookie:CookieService,private router: Router) {
     if(this.cookie.hasKey("refreshToken"))
-    this.router.navigate(["/home"],{replaceUrl: true})
+    this.router.navigate(["/dashboard"],{replaceUrl: true})
   }
   async ngAfterContentInit(): Promise<void> {
     this.intervalId = setInterval(async () => {
