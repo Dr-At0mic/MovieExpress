@@ -19,7 +19,7 @@
     </div>
 </div>
 @if(menuFlag){
-    <div class="bg-black w-[40%] h-[55dvh] absolute right-0 top-0 sm:hidden flex justify-center mt-[6dvh] z-10">
+    <div class="bg-black w-[40%] h-[55dvh] absolute right-0 top-0 sm:hidden flex justify-center mt-[6dvh] z-20">
         <div class="h-[98%] w-[90%] flex flex-col justify-between items-center mt-1">
             @for (item of menuItemsList; track $index) {
                 <button (click)="redirectMenu(item.iconId)" class="bg-[#801717] rounded-lg sm:w-[100%] sm:h-[10%] flex justify-start items-center text-[20px] w-[90%] h-[10%] select-none active:bg-red-500">

@@ -1,4 +1,4 @@
-import { Component, OnChanges, SimpleChanges } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { cssClapperBoard, cssMathPlus } from '@ng-icons/css.gg';
 import { heroMagnifyingGlass } from '@ng-icons/heroicons/outline';

@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Transactional
-public class SigninService {
+public class SignInService {
 
     @Autowired
     private UserRepository userRepository;

@@ -23,4 +23,11 @@ export class ApiMethodsService {
       return of(apierror);
     }
   }
+  getMethodXParam(url: string): Observable<any>{
+    try {
+      return this.http.get(url);
+    } catch (error) {
+      return of(error);
+    }
+  }
 }

@@ -18,6 +18,7 @@
     "@angular/platform-browser": "^17.2.0",
     "@angular/platform-browser-dynamic": "^17.2.0",
     "@angular/router": "^17.2.0",
+    "@ng-icons/bootstrap-icons": "^27.2.0",
     "@ng-icons/circum-icons": "^27.2.0",
     "@ng-icons/core": "^27.2.0",
     "@ng-icons/css.gg": "^27.2.0",

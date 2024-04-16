@@ -5,11 +5,15 @@ import { ApiMethodsService } from '../apiservice/api-methods.service';
 import { ErrorCatcher } from '../models/ErrorCatcher.service';
 import { CaptchaResponse, Response } from '../models/Response.service';
 import { __values } from 'tslib';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
+
 })
 export class AuthenticationService {
+
+
   convertToResponse(response: any): Response {
     const res: Response = new Response();
     res.setData(response.data);
@@ -146,8 +150,7 @@ export class AuthenticationService {
     };
     const userDto = {
       emailId: emailId,
-      password: password,
-      ipAddress: '234234',
+      password: password
     };
     try {
       const serverresponse = await this.validateCaptcha(captData);
@@ -236,5 +239,13 @@ export class AuthenticationService {
           },
         });
     });
+  }
+  async createTempuser()  {
+    console.log("in")
+     const response: Observable<any> = this.api.getMethodXParam(SystemConstants.GET_tEMP_USER);
+     console.log(response);
+  }
+  refreshToken(refreshToken: string) {
+    //create a end point to refreshToken
   }
 }

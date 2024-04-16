@@ -4,12 +4,14 @@ import com.movieexpress.backend.customexception.ApplicationException;
 import com.movieexpress.backend.customexception.ErrorCodes;
 import com.movieexpress.backend.models.Response;
 import com.movieexpress.backend.service.CaptchaService;
+import com.movieexpress.backend.service.CrossCheck;
 import com.movieexpress.backend.service.EmailService;
+import com.movieexpress.backend.systemutils.JwtUtils;
 import com.movieexpress.backend.systemutils.SystemConstants;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -22,6 +24,10 @@ public class IdentityVerificationComponent {
     private EmailService emailService;
     @Autowired
     private CaptchaService captchaService;
+    @Autowired
+    private JwtUtils jwtUtils;
+    @Autowired
+    private CrossCheck crossCheck;
     private static final ExecutorService newThread = Executors.newFixedThreadPool(SystemConstants.MAXIMUM_POOL_SIZE);
 
     public void sendVerificationEmail(String emailId, String authenticationToken) {
@@ -111,7 +117,7 @@ public class IdentityVerificationComponent {
                         emailId,
                         "verification email for your signup in movieexpress",
                         htmlBody.replace("[VerificationLink]",
-                                "http://localhost:4200/ZW1haWxWZXJpZmljYXRpb24/dmVyaWZpY2F0aW9uVG9rZW4="+authenticationToken
+                                "http://localhost:4200/ZW1haWxWZXJpZmljYXRpb24/dmVyaWZpY2F0aW9uVG9rZW4=" + authenticationToken
                         )
                 );
             });
@@ -124,17 +130,38 @@ public class IdentityVerificationComponent {
             );
         }
     }
-    public void captchaGenerate(HttpServletResponse response) throws IOException {
+
+    public void captchaGenerate(HttpServletResponse response, String accessToken) throws IOException {
+        if (null == accessToken)
+            throw new ApplicationException(
+                    ErrorCodes.EMPTY_FIELD,
+                    "token cannot be empty",
+                    HttpStatus.FORBIDDEN
+            );
+        Claims claims = jwtUtils.tokenExtractor(accessToken);
+        if (!crossCheck.userExist(claims.getSubject()) || jwtUtils.isTokenExpired(accessToken))
+            throw new ApplicationException(
+                    ErrorCodes.USER_NOT_FOUND,
+                    "invalid token",
+                    HttpStatus.FORBIDDEN
+            );
         captchaService.generateCapthca(response);
     }
 
-    public Response ValidateCaptcha(String captchaId, String captchaText) {
-        if(null == captchaId || null == captchaText || captchaId.length()<24)
+    public Response ValidateCaptcha(String captchaId, String captchaText, String accessToken) {
+        if (null==accessToken|| null == captchaId || null == captchaText || captchaId.length() < 24)
             throw new ApplicationException(
-                    ErrorCodes.INVALID_CAPTCHA,
+                    ErrorCodes.EMPTY_FIELD,
                     "captcha is invalid",
                     HttpStatus.BAD_REQUEST
             );
-        return captchaService.validateCaptcha(captchaId,captchaText);
+        Claims claims = jwtUtils.tokenExtractor(accessToken);
+        if(!crossCheck.userExist(claims.getSubject()) || jwtUtils.isTokenExpired(accessToken))
+            throw new ApplicationException(
+                ErrorCodes.USER_NOT_FOUND,
+                "invalid Token",
+                HttpStatus.FORBIDDEN
+            );
+        return captchaService.validateCaptcha(captchaId, captchaText);
     }
 }

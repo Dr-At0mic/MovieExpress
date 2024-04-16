@@ -6,7 +6,6 @@ import com.movieexpress.backend.models.*;
 import com.movieexpress.backend.service.CrossCheck;
 import com.movieexpress.backend.service.SessionHandler;
 import com.movieexpress.backend.service.SignUpService;
-import com.sun.tools.jconsole.JConsoleContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -29,7 +28,6 @@ public class SignupComponent {
     private IdentityVerificationComponent identityVerificationComponent;
 
     public SendEmailResponse verifyEmail(SignupRequest signUpRequest) {
-        System.out.println(signUpRequest);
         if (null == signUpRequest.getEmailId() || null == signUpRequest.getPassword() || signUpRequest.getEmailId().isEmpty() || signUpRequest.getPassword().isEmpty())
             throw new ApplicationException(
                     ErrorCodes.INVALID_INPUT,
@@ -60,14 +58,14 @@ public class SignupComponent {
 
     }
 
-    public EmailVerificationResponse authenticateVerificationToken(VerifyEmailRequest verifyEmailRequest) {
+    public ResponseTokens authenticateVerificationToken(VerifyEmailRequest verifyEmailRequest) {
         if (verifyEmailRequest.getSessionAccessToken().isEmpty() || verifyEmailRequest.getSessionAccessToken().isBlank())
             throw new ApplicationException(
                     ErrorCodes.INVALID_TOKEN,
                     "Token-Cannot-Be-Empty || Blank",
                     HttpStatus.BAD_REQUEST
             );
-        return signUpService.authenticateVerificationToken(verifyEmailRequest.getSessionAccessToken());
+        return signUpService.activateUser(verifyEmailRequest.getSessionAccessToken());
     }
 
 
@@ -80,5 +78,15 @@ public class SignupComponent {
             );
         Map<String, String> userData = signUpService.resendEmail(resendEmailRequest.getSessionId());
         identityVerificationComponent.sendVerificationEmail(userData.get("EmailId"),userData.get("ValidationToken"));
+    }
+
+    public ResponseTokens createNewTempUser(String ipAddress) {
+        if(!crossCheck.ipValidatr((ipAddress)))
+            throw new ApplicationException(
+                ErrorCodes.INVALID_IP_ADDRESS,
+                "cannot establish a connection with server",
+                HttpStatus.FORBIDDEN
+            );
+        return signUpService.generateTokens(ipAddress);
     }
 }

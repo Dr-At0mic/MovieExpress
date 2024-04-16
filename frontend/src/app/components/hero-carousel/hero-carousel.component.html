@@ -1,31 +1,9 @@
-<div class="bg-black w-[100%] md:h-[60dvh]  h-[35dvh] flex lg:justify-between items-center justify-center text-white"
-    pagination="true" pagination-clickable="true" direction="vertical" space-between="30" mousewheel="true">
-    <div class=" md:w-[33%] md:h-[90%] rounded-e-md lg:flex flex-col hidden justify-evenly items-center">
-        <div
-            class="text-[4vmax] font-extrabold text-[#B92D1A] w-[90%] h-[30%] flex flex-col justify-center items-center">
-            <div class="">Dr Strange 2</div>
-            <div class="text-[1vmax] ml-36">The multiverse of Maddness</div>
-        </div>
-        <div class=""><span class="bg bg-yellow-500 p-1 font-semibold h-[10%] shadow-md shadow-stone-500">IMDB</span>:
-            9.4/10</div>
-        <div class="text-justify p-2">Doctor Strange teams up with a mysterious teenage girl from his dreams who
-            can travel across multiverses,
-            to battle multiple threats, including other-universe versions of himself, which threaten to wipe out
-            millions across
-            the multiverse. They seek help from Wanda the Scarlet Witch, Wong and others.</div>
-        <div class="h-[20%] w-[90%]  flex justify-between items-center">
-            <button
-                class="h-[70%] w-[35%] bg-[#AD1A02] hover:bg-[#dd4545] hover:duration-100 transition-all active:shadow -translate-y-1 active:scale-y-[3px] active:bg-[#913131] rounded-3xl shadow-lg shadow-[#5a5a5a] text-[1vmax] font-bold">Play</button>
-            <button
-                class="h-[70%] w-[35%] bg-[#AD1A02]  hover:bg-[#dd4545] active:shadow hover:duration-100 transition-all -translate-y-1 active:scale-y-[3px] active:bg-[#913131] rounded-3xl shadow-lg shadow-[#5a5a5a] text-[1vmax] font-bold">Watch
-                Trailer</button>
-        </div>
-    </div>
-    <div
-        class="bg-red-800 md:h-full md:w-full lg:w-[65%] lg:h-[98%] rounded-md lg:mb-[3dvh] w-full h-full overflow-hidden">
-        <div class="bg-cover bg-center w-full h-full" style="background-image: url('../../../assets/drstrange.jpg')">
-            <div class="hidden"></div>
-            <!-- make another component named mobile view or something to render the components inside the iamge when phone shrinks -->
-        </div>
-    </div>
-</div>
+<swiper-container class="   bg-black w-[100%] md:h-[60dvh]  h-[35dvh] flex lg:justify-between items-center justify-center z-10"  effect="cube" direction="horizontal"
+ mousewheel="true" autoplay-delay="4000" autoplay-disable-on-interaction="true">
+    @for (item of carouselSlideItem; track $index) {
+        <swiper-slide>
+            <app-carouselslide [data]="item"></app-carouselslide>
+        </swiper-slide>
+    }
+</swiper-container>
+

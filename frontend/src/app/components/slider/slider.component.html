@@ -1,0 +1,20 @@
+<style>
+    .darkLayer{
+        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8))
+
+    }
+</style>
+<div class="lg:h-[3.5dvh] sm:h-[3dvh] w-full text-[1rem] sm:text-[1.3rem] lg:text-[1.5rem] font-extrabold text-[#ecebeb]">{{title}}</div>
+<swiper-container class="h-[27dvh] sm:h-[20dvh] lg:h-[25dvh] xl:h-[29dvh]" space-between="15"
+    style="--swiper-navigation-color: #ff0000;--swiper-navigation-size:6dvh" [slidesPerView]="size" navigation>
+    @for (item of data; track $index) {
+        <swiper-slide class="text-white overflow-hidden select-none">
+            <div class="bg-cover bg-center w-full h-full flex justify-center items-center hover:scale-150 duration-150" style="background-image: url('{{item.imageUrl}}');" (mouseover)="mouseOver(item.id)" (mouseleave)="mouseLeave()" (click)="mouseOver(item.id)">
+               <button class="{{item.id===id?onHover:hoverOut}} w-full h-full justify-center items-center">
+                <ng-icon name="bootstrapPlayFill" color="white" size="60"></ng-icon>
+               </button>
+            </div>
+        </swiper-slide>
+    }
+    
+</swiper-container>

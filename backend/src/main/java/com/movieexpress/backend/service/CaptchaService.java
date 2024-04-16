@@ -32,7 +32,7 @@ public class CaptchaService {
         response.setContentType("image/jpeg");
         String captchaText = captchaProducer.createText();
         String captchaId = sessionHandler.setCatpcha(captchaText);
-        response.setHeader("captchaId",captchaId);
+        response.setHeader("captchaId", captchaId);
         BufferedImage captchaImage = captchaProducer.createImage(captchaText);
         response.setHeader("Access-Control-Expose-Headers", "captchaId");
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -45,7 +45,7 @@ public class CaptchaService {
 
     public Response validateCaptcha(String captchaId, String captchaText) {
         String orgCaptchaText = sessionHandler.getTokenFromSessionUsingObjectId(new ObjectId(captchaId));
-        if (captchaText.equals(orgCaptchaText)){
+        if (captchaText.equals(orgCaptchaText)) {
             sessionHandler.deleteSessionDocument(new ObjectId(captchaId));
             return Response.builder()
                     .status(true)

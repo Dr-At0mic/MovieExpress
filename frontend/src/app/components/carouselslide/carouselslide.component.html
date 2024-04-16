@@ -1,0 +1,26 @@
+<div class="bg-black w-[100%] md:h-[60dvh]  h-[35dvh] flex lg:justify-between items-center justify-center text-white">
+    <div class=" md:w-[33%] md:h-[90%] rounded-e-md lg:flex flex-col hidden justify-evenly items-center">
+        <div
+            class="text-[4vmax] font-extrabold {{data.color}} w-[90%] h-[30%] flex flex-col justify-center items-center">
+            <div class="">{{data.title}}</div>
+            <div class="text-[1vmax] ml-36">{{data.titleTail}}</div>
+        </div>
+        <div class=""><span class="bg bg-yellow-800 p-1 font-semibold h-[10%] shadow-md shadow-stone-500">IMDB</span>:
+            {{data.rating}}/10</div>
+        <div class="text-justify p-2">{{data.description}}</div>
+        <div class="h-[20%] w-[90%]  flex justify-between items-center">
+            <button
+                class="h-[70%] w-[35%] hover:duration-100 transition-all active:shadow -translate-y-1 active:scale-y-[3px]  rounded-3xl shadow-lg shadow-[#5a5a5a] text-[1vmax] font-bold {{data.btnBgColor}} {{data.hoverBtnBgColor}} {{data.activeBtnBgColor}}">Play</button>
+            <button
+                class="h-[70%] w-[35%] active:shadow hover:duration-100 transition-all -translate-y-1 active:scale-y-[3px] rounded-3xl shadow-lg shadow-[#5a5a5a] text-[1vmax] font-bold {{data.btnBgColor}} {{data.hoverBtnBgColor}} {{data.activeBtnBgColor}}">Watch
+                Trailer</button>
+        </div>
+    </div>
+    <div
+        class="bg-red-800 md:h-full md:w-full lg:w-[65%] lg:h-[98%] rounded-md lg:mb-[3dvh] w-full h-full overflow-hidden">
+        <div class="bg-cover bg-center w-full h-full" style="background-image: url({{data.imageUrl}})">
+            <div class="hidden"></div>
+            <!-- make another component named mobile view or something to render the components inside the iamge when phone shrinks -->
+        </div>
+    </div>
+</div>

@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -25,6 +27,12 @@ public class User implements Serializable {
     @Column
     private int gender;
     @Column
+    private String ipAddress;
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    private UserAuthentication userAuthentication;
+    @Column
     private int accountStatus;
+    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    private List<Roles> roles;
 
 }

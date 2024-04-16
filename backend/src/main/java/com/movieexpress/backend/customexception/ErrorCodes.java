@@ -44,4 +44,5 @@ public class ErrorCodes {
     public static final int LIMIT_EXCEED = 523;
     public static final int INVALID_ID = 524;
     public static final int INVALID_CAPTCHA = 525;
+    public static final int INVALID_IP_ADDRESS = 526;
 }

@@ -5,7 +5,7 @@ import com.movieexpress.backend.customexception.ErrorCodes;
 import com.movieexpress.backend.models.SigninRequest;
 import com.movieexpress.backend.models.SigninResponse;
 import com.movieexpress.backend.service.CrossCheck;
-import com.movieexpress.backend.service.SigninService;
+import com.movieexpress.backend.service.SignInService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,7 @@ public class SigninComponent {
     @Autowired
     private CrossCheck crossCheck;
     @Autowired
-    private SigninService signinService;
+    private SignInService signinService;
 
     public SigninResponse verifyUser(SigninRequest signinRequest) {
         if (signinRequest.getEmailId().isEmpty() || signinRequest.getPassword().isEmpty())
